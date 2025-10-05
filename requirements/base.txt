@@ -1,5 +1,5 @@
 # Core Django
-Django==5.0.10
+Django==5.0.10  # TODO: Update to 5.1.x after testing for security patches
 djangorestframework==3.15.2
 django-environ==0.11.2
 
@@ -12,7 +12,7 @@ redis==5.0.8
 django-redis==5.4.0
 
 # Celery
-celery==5.4.0
+celery==5.4.0  # TODO: Update to 5.5.x after testing
 django-celery-beat==2.7.0
 flower==2.0.1
 

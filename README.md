@@ -221,8 +221,16 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
 - HTTPS enforced in production
 - CORS configured for specific origins
-- Rate limiting enabled
+- Rate limiting ready (needs to be applied to endpoints)
 - Secure cookie settings in production
+- Database credentials use environment variables
+- Sentry error tracking (optional, production)
+
+**Important**: See [SECURITY.md](SECURITY.md) for:
+- Security configuration checklist
+- Dependency security status
+- Secret management best practices
+- Production deployment security
 
 ## 📄 License
 

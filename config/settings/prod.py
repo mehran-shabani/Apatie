@@ -35,20 +35,24 @@ SMS_ENABLED = env.bool('SMS_ENABLED', default=True)
 # Sentry Configuration
 SENTRY_DSN = env('SENTRY_DSN', default='')
 if SENTRY_DSN:
-    import sentry_sdk
-    from sentry_sdk.integrations.django import DjangoIntegration
-    from sentry_sdk.integrations.celery import CeleryIntegration
+    try:
+        import sentry_sdk
+        from sentry_sdk.integrations.django import DjangoIntegration
+        from sentry_sdk.integrations.celery import CeleryIntegration
 
-    sentry_sdk.init(
-        dsn=SENTRY_DSN,
-        integrations=[
-            DjangoIntegration(),
-            CeleryIntegration(),
-        ],
-        traces_sample_rate=0.1,
-        send_default_pii=False,
-        environment='production',
-    )
+        sentry_sdk.init(
+            dsn=SENTRY_DSN,
+            integrations=[
+                DjangoIntegration(),
+                CeleryIntegration(),
+            ],
+            traces_sample_rate=0.1,
+            send_default_pii=False,
+            environment='production',
+        )
+    except ImportError:
+        # Sentry SDK not installed, skip initialization
+        pass
 
 # Logging
 LOGGING = {

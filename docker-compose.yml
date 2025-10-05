@@ -5,9 +5,9 @@ services:
     image: postgres:16-alpine
     container_name: apatye_db
     environment:
-      POSTGRES_DB: apatye
-      POSTGRES_USER: apatye
-      POSTGRES_PASSWORD: apatye
+      POSTGRES_DB: ${POSTGRES_DB:-apatye}
+      POSTGRES_USER: ${POSTGRES_USER:-apatye}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-apatye_dev_password}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -43,7 +43,7 @@ services:
       - .env
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.dev
-      - DATABASE_URL=postgres://apatye:apatye@db:5432/apatye
+      - DATABASE_URL=postgres://${POSTGRES_USER:-apatye}:${POSTGRES_PASSWORD:-apatye_dev_password}@db:5432/${POSTGRES_DB:-apatye}
       - REDIS_URL=redis://redis:6379/0
     depends_on:
       db:
@@ -63,12 +63,15 @@ services:
       - .env
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.dev
-      - DATABASE_URL=postgres://apatye:apatye@db:5432/apatye
+      - DATABASE_URL=postgres://${POSTGRES_USER:-apatye}:${POSTGRES_PASSWORD:-apatye_dev_password}@db:5432/${POSTGRES_DB:-apatye}
       - REDIS_URL=redis://redis:6379/0
     depends_on:
-      - db
-      - redis
-      - web
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      web:
+        condition: service_started
 
   celery_beat:
     build: .
@@ -80,12 +83,15 @@ services:
       - .env
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.dev
-      - DATABASE_URL=postgres://apatye:apatye@db:5432/apatye
+      - DATABASE_URL=postgres://${POSTGRES_USER:-apatye}:${POSTGRES_PASSWORD:-apatye_dev_password}@db:5432/${POSTGRES_DB:-apatye}
       - REDIS_URL=redis://redis:6379/0
     depends_on:
-      - db
-      - redis
-      - web
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      web:
+        condition: service_started
 
 volumes:
   postgres_data:

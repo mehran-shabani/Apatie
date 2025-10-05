@@ -6,6 +6,8 @@ import sys
 
 def main():
     """Run administrative tasks."""
+    # Default to dev settings for local development, prod for deployment
+    # Can be overridden by setting DJANGO_SETTINGS_MODULE environment variable
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.dev')
     try:
         from django.core.management import execute_from_command_line
