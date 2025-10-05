@@ -1,4 +1,3 @@
-"""Custom exception handler for Apatye project."""
 import logging
 from typing import Any
 
