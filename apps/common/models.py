@@ -18,6 +18,10 @@ class TimeStampedModel(models.Model):
         ordering = ['-created_at']
 
 
+from django.utils import timezone
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+
 class SoftDeleteModel(models.Model):
     """
     An abstract base class model that provides soft delete functionality.
@@ -30,13 +34,12 @@ class SoftDeleteModel(models.Model):
 
     def soft_delete(self):
         """Soft delete the object."""
-        from django.utils import timezone
         self.is_deleted = True
         self.deleted_at = timezone.now()
-        self.save()
+        self.save(update_fields=['is_deleted', 'deleted_at'])
 
     def restore(self):
         """Restore soft-deleted object."""
         self.is_deleted = False
         self.deleted_at = None
-        self.save()
+        self.save(update_fields=['is_deleted', 'deleted_at'])
