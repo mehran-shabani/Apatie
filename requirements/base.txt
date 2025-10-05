@@ -1,0 +1,34 @@
+# Core Django
+Django==5.0.10
+djangorestframework==3.15.2
+django-environ==0.11.2
+
+# Database
+psycopg2-binary==2.9.9
+dj-database-url==2.2.0
+
+# Redis & Caching
+redis==5.0.8
+django-redis==5.4.0
+
+# Celery
+celery==5.4.0
+django-celery-beat==2.7.0
+flower==2.0.1
+
+# API Documentation
+drf-spectacular==0.27.2
+
+# CORS
+django-cors-headers==4.3.1
+
+# Persian/Jalali Support
+jdatetime==5.0.0
+
+# SMS (Kavenegar)
+kavenegar==1.1.2
+
+# Utilities
+python-decouple==3.8
+requests==2.32.3
+Pillow==10.4.0
