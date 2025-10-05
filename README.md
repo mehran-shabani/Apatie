@@ -27,40 +27,12 @@ Backend API for Apatye platform - A modular monolith built with Django 5, DRF, P
 ### Setup & Run
 
 1. **Clone the repository**
-```bash
-git clone <repository-url>
-cd apatye_backend
-```
-
-2. **Create environment file**
-```bash
-cp .env.example .env
-# Edit .env with your configuration
-```
-
-3. **Build and start services**
-```bash
-make build
-make up
-```
-
-4. **Run migrations**
-```bash
-make migrate
-```
-
-5. **Create superuser**
-```bash
-make createsuperuser
-```
-
 6. **Access the application**
-- API: http://localhost:8000/
-- Health Check: http://localhost:8000/health/
-- API Documentation (Swagger): http://localhost:8000/api/docs/
-- API Documentation (ReDoc): http://localhost:8000/api/redoc/
-- Admin Panel: http://localhost:8000/admin/
-
+- [API](http://localhost:8000/)
+- [Health Check](http://localhost:8000/health/)
+- [API Documentation (Swagger)](http://localhost:8000/api/docs/)
+- [API Documentation (ReDoc)](http://localhost:8000/api/redoc/)
+- [Admin Panel](http://localhost:8000/admin/)
 ## 🔧 Environment Variables
 
 Key environment variables (see `.env.example` for full list):
