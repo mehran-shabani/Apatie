@@ -17,7 +17,7 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('-created_at',)
     
     fieldsets = (
-        (None, {'fields': ('mobile', 'password')}),
+        (None, {'fields': ('mobile',)}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
         (_('User type'), {'fields': ('user_type',)}),
         (_('Permissions'), {'fields': ('is_active', 'is_verified', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
@@ -31,7 +31,7 @@ class UserAdmin(BaseUserAdmin):
         }),
     )
     
-    readonly_fields = ('created_at', 'updated_at', 'last_login')
+    readonly_fields = ('created_at', 'updated_at', 'last_login', 'password')
 
 
 @admin.register(OTPCode)

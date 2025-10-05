@@ -1,6 +1,6 @@
 # Core Django
-Django==5.1.4  # Updated for security patches (CVE fixes)
-djangorestframework==3.15.2
+Django==5.2.7  # Latest security release
+djangorestframework==3.16.1
 django-environ==0.11.2
 
 # Database
@@ -12,8 +12,8 @@ redis==5.0.8
 django-redis==5.4.0
 
 # Celery
-celery==5.4.0  # Stable LTS version (5.5.x requires testing)
-django-celery-beat==2.7.0
+celery==5.5.3
+django-celery-beat==2.8.1
 flower==2.0.1
 
 # API Documentation
@@ -30,7 +30,7 @@ kavenegar==1.1.2
 
 # Utilities
 python-decouple==3.8
-requests==2.32.3  # Latest stable
+requests==2.32.5  # Latest stable
 Pillow==10.4.0
 
 # Payment & Validation

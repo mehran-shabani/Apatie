@@ -1,4 +1,3 @@
 """
-Delivery app for managing motorcycle delivery service.
+Delivery app for managing delivery workflows.
 """
-default_app_config = 'apps.delivery.apps.DeliveryConfig'
