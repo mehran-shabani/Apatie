@@ -1,4 +1,3 @@
-"""Custom exception handling utilities for the project."""
 import logging
 from typing import Any
 
