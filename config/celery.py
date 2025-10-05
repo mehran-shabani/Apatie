@@ -6,8 +6,11 @@ import os
 from celery import Celery
 from celery.schedules import crontab
 
-# Set default Django settings module
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.dev')
+# Set default Django settings module (prefer production-safe defaults)
+os.environ.setdefault(
+    'DJANGO_SETTINGS_MODULE',
+    os.getenv('DJANGO_SETTINGS_MODULE', 'config.settings.prod'),
+)
 
 app = Celery('apatye')
 

@@ -39,7 +39,7 @@ REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
 ]
 
 # Celery - Eager execution in development
-CELERY_TASK_ALWAYS_EAGER = env.bool('CELERY_TASK_ALWAYS_EAGER', default=False)
+CELERY_TASK_ALWAYS_EAGER = env.bool('CELERY_TASK_ALWAYS_EAGER', default=True)
 CELERY_TASK_EAGER_PROPAGATES = True
 
 # Logging

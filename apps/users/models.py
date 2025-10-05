@@ -1,8 +1,8 @@
-"""
-User models for Apatye project.
-"""
+"""User models for Apatye project."""
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.core.validators import RegexValidator
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from apps.common.models import TimeStampedModel
@@ -45,8 +45,19 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
         VENDOR = 'vendor', _('Vendor')
         ADMIN = 'admin', _('Admin')
 
-    mobile = models.CharField(_('Mobile number'), max_length=11, unique=True, db_index=True)
-    email = models.EmailField(_('Email address'), blank=True, null=True)
+    mobile_validator = RegexValidator(
+        regex=r'^09\d{9}$',
+        message=_('Mobile number must be 11 digits starting with 09'),
+    )
+
+    mobile = models.CharField(
+        _('Mobile number'),
+        max_length=11,
+        unique=True,
+        db_index=True,
+        validators=[mobile_validator],
+    )
+    email = models.EmailField(_('Email address'), blank=True, null=True, unique=True)
     first_name = models.CharField(_('First name'), max_length=150, blank=True)
     last_name = models.CharField(_('Last name'), max_length=150, blank=True)
     user_type = models.CharField(_('User type'), max_length=20, choices=UserType.choices, default=UserType.CUSTOMER)
@@ -70,15 +81,38 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
 
     def get_full_name(self):
         """Return the user's full name."""
-        return f'{self.first_name} {self.last_name}'.strip() or self.mobile
+
+        full_name = ' '.join(filter(None, [self.first_name, self.last_name]))
+        return full_name or self.mobile
 
 
 class OTPCode(TimeStampedModel):
+    """OTP codes for mobile verification.
+
+    The mobile field remains a CharField (instead of a ForeignKey) so we can
+    issue OTPs before a full user account is created.
     """
-    OTP codes for mobile verification.
-    """
-    mobile = models.CharField(_('Mobile number'), max_length=11, db_index=True)
-    code = models.CharField(_('OTP Code'), max_length=6)
+
+    mobile_validator = RegexValidator(
+        regex=r'^09\d{9}$',
+        message=_('Mobile number must be 11 digits starting with 09'),
+    )
+    code_validator = RegexValidator(
+        regex=r'^\d{6}$',
+        message=_('OTP code must be exactly 6 digits'),
+    )
+
+    mobile = models.CharField(
+        _('Mobile number'),
+        max_length=11,
+        db_index=True,
+        validators=[mobile_validator],
+    )
+    code = models.CharField(
+        _('OTP Code'),
+        max_length=6,
+        validators=[code_validator],
+    )
     is_used = models.BooleanField(_('Is used'), default=False)
     expires_at = models.DateTimeField(_('Expires at'))
 
@@ -87,11 +121,13 @@ class OTPCode(TimeStampedModel):
         verbose_name_plural = _('OTP Codes')
         db_table = 'user_otp_codes'
         ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['mobile', 'expires_at', 'is_used']),
+        ]
 
     def __str__(self):
         return f'{self.mobile} - {self.code}'
 
     def is_valid(self):
         """Check if OTP is still valid."""
-        from django.utils import timezone
         return not self.is_used and self.expires_at > timezone.now()

@@ -1,15 +1,12 @@
-"""
-Base models for Apatye project.
-"""
+"""Base models for Apatye project."""
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
 class TimeStampedModel(models.Model):
-    """
-    An abstract base class model that provides self-updating
-    'created_at' and 'updated_at' fields.
-    """
+    """An abstract base class that tracks creation and update timestamps."""
+
     created_at = models.DateTimeField(_('Created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('Updated at'), auto_now=True)
 
@@ -18,14 +15,9 @@ class TimeStampedModel(models.Model):
         ordering = ['-created_at']
 
 
-from django.utils import timezone
-from django.db import models
-from django.utils.translation import gettext_lazy as _
-
 class SoftDeleteModel(models.Model):
-    """
-    An abstract base class model that provides soft delete functionality.
-    """
+    """An abstract model that provides soft delete behaviour."""
+
     is_deleted = models.BooleanField(_('Is deleted'), default=False)
     deleted_at = models.DateTimeField(_('Deleted at'), null=True, blank=True)
 
@@ -33,13 +25,15 @@ class SoftDeleteModel(models.Model):
         abstract = True
 
     def soft_delete(self):
-        """Soft delete the object."""
+        """Mark the instance as deleted without removing it from the database."""
+
         self.is_deleted = True
         self.deleted_at = timezone.now()
         self.save(update_fields=['is_deleted', 'deleted_at'])
 
     def restore(self):
-        """Restore soft-deleted object."""
+        """Restore a previously soft-deleted instance."""
+
         self.is_deleted = False
         self.deleted_at = None
         self.save(update_fields=['is_deleted', 'deleted_at'])
