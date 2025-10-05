@@ -30,4 +30,16 @@ app.conf.beat_schedule = {
         'task': 'apps.appointments.tasks.cleanup_expired_appointments',
         'schedule': crontab(hour=2, minute=0),  # Every day at 2:00 AM
     },
+    'reconcile-pending-payments': {
+        'task': 'apps.billing.tasks.reconcile_pending_payments',
+        'schedule': crontab(hour='*/4', minute=0),  # Every 4 hours
+    },
+    'check-expired-subscriptions': {
+        'task': 'apps.billing.tasks.check_expired_subscriptions',
+        'schedule': crontab(hour=3, minute=0),  # Every day at 3:00 AM
+    },
+    'send-subscription-expiry-reminders': {
+        'task': 'apps.billing.tasks.send_subscription_expiry_reminders',
+        'schedule': crontab(hour=9, minute=0),  # Every day at 9:00 AM
+    },
 }

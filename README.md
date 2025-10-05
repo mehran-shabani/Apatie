@@ -15,6 +15,7 @@ Backend API for Apatye platform - A modular monolith built with Django 5, DRF, P
 
 1. **Doctor Appointments** (`apps.appointments`) - Appointment scheduling system
 2. **Motorcycle Delivery** (`apps.delivery`) - Delivery service management
+3. **Payment & Billing** (`apps.billing`) - Zibal integration for Business Plan subscriptions
 
 ## 🚀 Quick Start
 
@@ -157,10 +158,25 @@ Interactive API documentation is available at:
 - **ReDoc**: http://localhost:8000/api/redoc/
 - **OpenAPI Schema**: http://localhost:8000/api/schema/
 
-## 💰 Business Model
+## 💰 Business Model & Payments
 
 - **Revenue Model**: Business Plan Boost subscriptions only
 - **No transaction commissions**
+- **Payment Gateway**: Zibal (زیبال)
+- **Pricing**: Starting from 500,000 Rials/month with volume discounts
+  - 3 months: 5% discount
+  - 6 months: 10% discount
+  - 12 months: 15% discount
+
+### Payment Features
+- ✅ Zibal IPG integration
+- ✅ Idempotent payment requests
+- ✅ Automatic payment verification
+- ✅ Subscription auto-activation
+- ✅ Payment reconciliation (manual & automated)
+- ✅ Comprehensive logging and monitoring
+
+See [ZIBAL_INTEGRATION.md](ZIBAL_INTEGRATION.md) for detailed documentation.
 
 ## 🛠️ Development
 
@@ -215,3 +231,52 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 ## 📧 Contact
 
 [Your Contact Information]
+
+## 💳 Payment Integration
+
+### Zibal Gateway
+
+Apatye uses Zibal as the payment gateway for subscription payments.
+
+#### Quick Test Flow
+
+```bash
+# 1. Start payment
+curl -X POST http://localhost:8000/api/billing/subscriptions/start/ \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"plan_type": "business", "months": 3}'
+
+# Response includes redirect_url
+# Redirect user to: https://gateway.zibal.ir/start/{trackId}
+
+# 2. After payment, callback is received automatically
+# GET /api/payments/zibal/callback?trackId=123456789
+
+# 3. Check subscription status
+curl http://localhost:8000/api/billing/subscriptions/me/ \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+#### Sandbox Configuration
+
+For development and testing:
+```env
+ZIBAL_MERCHANT_ID=zibal
+ZIBAL_SANDBOX=True
+```
+
+#### Reconciliation
+
+```bash
+# Manual reconciliation of pending payments
+python manage.py zibal_reconcile --hours=24
+
+# Dry run (no changes)
+python manage.py zibal_reconcile --dry-run
+```
+
+#### Documentation
+
+Full payment integration guide: [ZIBAL_INTEGRATION.md](ZIBAL_INTEGRATION.md)
+

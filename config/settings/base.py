@@ -204,3 +204,11 @@ SMS_ENABLED = env.bool('SMS_ENABLED', default=False)
 # Business Configuration
 BUSINESS_PLAN_BOOST_ENABLED = True
 TRANSACTION_COMMISSION_ENABLED = False
+
+# Zibal Payment Gateway Configuration
+ZIBAL_MERCHANT_ID = env('ZIBAL_MERCHANT_ID', default='zibal')
+ZIBAL_GATEWAY_BASE = env('ZIBAL_GATEWAY_BASE', default='https://gateway.zibal.ir')
+ZIBAL_API_BASE = env('ZIBAL_API_BASE', default='https://gateway.zibal.ir')
+ZIBAL_TIMEOUT = env.int('ZIBAL_TIMEOUT', default=10)
+ZIBAL_SANDBOX = env.bool('ZIBAL_SANDBOX', default=True)
+ZIBAL_CALLBACK_BASE = env('ZIBAL_CALLBACK_BASE', default='http://localhost:3000')
