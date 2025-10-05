@@ -30,7 +30,7 @@ kavenegar==1.1.2
 
 # Utilities
 python-decouple==3.8
-requests==2.32.3  # Latest stable
+requests==2.32.4  # Latest stable
 Pillow==10.4.0
 
 # Payment & Validation
