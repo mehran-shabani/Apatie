@@ -1,4 +1,3 @@
 """
-Vendors app for managing service providers.
+Vendors app for managing vendor profiles and onboarding.
 """
-default_app_config = 'apps.vendors.apps.VendorsConfig'
