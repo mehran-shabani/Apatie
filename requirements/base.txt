@@ -1,5 +1,4 @@
 # Core Django
-# Keep Django aligned with the latest security patch (supersedes 5.1.4 from the base branch)
 Django==5.2.7  # Latest security release
 djangorestframework==3.16.1
 django-environ==0.11.2
