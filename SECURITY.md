@@ -23,15 +23,18 @@ Current status and planned updates:
 
 | Package | Current | Latest Stable | Security Status | Action |
 |---------|---------|---------------|-----------------|--------|
-| Django | 5.0.10 | 5.1.x | Monitor | Update after testing |
-| djangorestframework | 3.15.2 | 3.15.2 | OK | ✅ |
-| requests | 2.32.3 | 2.32.3 | OK | ✅ |
-| celery | 5.4.0 | 5.5.x | Monitor | Update after testing |
+| Django | 5.1.4 | 5.1.4 | ✅ Updated | Security patches applied |
+| djangorestframework | 3.15.2 | 3.15.2 | ✅ OK | Current stable |
+| requests | 2.32.3 | 2.32.3 | ✅ OK | Current stable |
+| celery | 5.4.0 | 5.5.x | ⚠️ Monitor | LTS version, 5.5.x needs testing |
 
-**Action Items:**
-- [ ] Test Django 5.1.x compatibility
-- [ ] Test Celery 5.5.x compatibility
-- [ ] Run full test suite before major version updates
+**Completed Actions:**
+- [x] Updated Django to 5.1.4 for security patches
+- [x] Verified DRF and requests are on latest stable
+
+**Remaining Action Items:**
+- [ ] Test Celery 5.5.x compatibility in future PR
+- [ ] Run full test suite to verify Django 5.1.4 compatibility
 
 ### 4. Docker Security
 - Use official base images (Python 3.11, PostgreSQL 16, Redis 7)
@@ -43,14 +46,18 @@ Current status and planned updates:
 Before deploying to production:
 
 - [ ] Change `SECRET_KEY` to a strong random value
-- [ ] Set `POSTGRES_PASSWORD` to a strong password
-- [ ] Set `DEBUG=False` in production
-- [ ] Configure `ALLOWED_HOSTS` properly
-- [ ] Enable `SECURE_SSL_REDIRECT=True`
-- [ ] Configure CORS with specific origins
-- [ ] Enable Sentry monitoring (optional)
+- [ ] Set `POSTGRES_PASSWORD` to a strong password (never use 'apatye' or defaults!)
+- [ ] Set `POSTGRES_USER` to a non-default username
+- [ ] Set `POSTGRES_DB` to your production database name
+- [ ] Set `DEBUG=False` in production (already configured in prod settings)
+- [ ] Configure `ALLOWED_HOSTS` properly with your domain
+- [ ] Enable `SECURE_SSL_REDIRECT=True` (already configured)
+- [ ] Configure CORS with specific origins only
+- [ ] Enable Sentry monitoring (optional but recommended)
 - [ ] Review and enable rate limiting on sensitive endpoints
 - [ ] Run security audit: `pip install safety && safety check`
+- [ ] Ensure DJANGO_SETTINGS_MODULE=config.settings.prod in production
+- [ ] Never use .env file from repository - create new with real secrets
 
 ### 6. Rate Limiting
 

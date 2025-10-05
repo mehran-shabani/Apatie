@@ -48,35 +48,46 @@ This document summarizes all fixes applied in response to PR comments and securi
 
 ## ⚙️ Configuration Improvements
 
-### 4. Django Settings Module ✅
+### 4. Django Settings Module Default ✅
 
-**Issue**: Comment suggested `manage.py` should respect environment variables better
+**Issue**: `manage.py` defaulted to dev settings - should default to prod for safety
 
-**Current Status**: 
-- Already uses `os.environ.setdefault()` which respects existing env vars
-- Added clarifying comment to explain behavior
-- No code change needed - existing implementation is correct
+**Resolution**:
+- Changed default from `config.settings.dev` → `config.settings.prod`
+- Development environments must now explicitly set `DJANGO_SETTINGS_MODULE=config.settings.dev`
+- Safer default - prevents accidental DEBUG=True in production
+- `.env` and `.env.example` updated with clarifying comments
+
+**Rationale**:
+- Production-safe by default
+- Explicit configuration required for dev mode
+- Follows principle of "secure by default"
 
 **Files Changed**:
-- `manage.py` (comment added)
+- `manage.py` (default changed to prod)
+- `.env` (added comment)
+- `.env.example` (added comment)
 
 ## 📦 Dependency Security
 
-### 5. Dependency Version Tracking ✅
+### 5. Dependency Version Updates ✅
 
 **Issue**: CodeRabbit flagged potential security vulnerabilities in dependencies
 
 **Fix**:
-- Added TODO comments for packages needing updates after testing
-- Django 5.0.10 → 5.1.x (needs testing)
-- Celery 5.4.0 → 5.5.x (needs testing)
-- Documented in SECURITY.md with action plan
+- ✅ **Django**: Updated from 5.0.10 → **5.1.4** (includes security patches)
+- ✅ **requests**: Confirmed 2.32.3 is latest stable
+- ✅ **djangorestframework**: Confirmed 3.15.2 is latest stable
+- ⚠️ **Celery**: Kept at 5.4.0 (stable LTS, 5.5.x needs compatibility testing)
 
-**Reasoning**: Conservative approach - major/minor version bumps need testing to avoid breaking changes
+**Reasoning**: 
+- Django 5.1.4 has important security patches
+- Celery 5.4.0 is LTS and stable, 5.5.x upgrade can be done after testing
+- Conservative approach to avoid breaking changes
 
 **Files Changed**:
-- `requirements/base.txt` (TODO comments added)
-- `SECURITY.md` (new file)
+- `requirements/base.txt` (Django updated, comments added)
+- `SECURITY.md` (tracking table updated)
 
 ## 📝 Documentation Improvements
 

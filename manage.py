@@ -6,9 +6,10 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    # Default to dev settings for local development, prod for deployment
-    # Can be overridden by setting DJANGO_SETTINGS_MODULE environment variable
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.dev')
+    # Default to prod for safety - override with DJANGO_SETTINGS_MODULE env var for dev
+    # Development: export DJANGO_SETTINGS_MODULE=config.settings.dev
+    # Production: uses default config.settings.prod
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.prod')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
