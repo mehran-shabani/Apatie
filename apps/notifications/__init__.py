@@ -1,4 +1,3 @@
 """
-Notifications app for managing SMS and push notifications.
+Notifications app for delivering system notifications.
 """
-default_app_config = 'apps.notifications.apps.NotificationsConfig'

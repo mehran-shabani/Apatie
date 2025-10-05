@@ -16,6 +16,9 @@ RUN apt-get update && apt-get install -y \
     gettext \
     && rm -rf /var/lib/apt/lists/*
 
+# Create application user
+RUN addgroup --system app && adduser --system --ingroup app app
+
 # Install Python dependencies
 COPY requirements/base.txt requirements/dev.txt ./requirements/
 RUN pip install --upgrade pip && \
@@ -25,7 +28,10 @@ RUN pip install --upgrade pip && \
 COPY . .
 
 # Create necessary directories
-RUN mkdir -p staticfiles media logs
+RUN mkdir -p staticfiles media logs && chown -R app:app /app
+
+# Switch to non-root user
+USER app
 
 # Expose port
 EXPOSE 8000
