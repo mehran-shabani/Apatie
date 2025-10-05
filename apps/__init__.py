@@ -1,0 +1,3 @@
+"""
+Apatye Django apps package.
+"""
