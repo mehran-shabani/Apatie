@@ -1,8 +1,12 @@
-"""
-URL patterns.
-"""
-from django.urls import path
+"""URL patterns for services API."""
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
+
+from .views import ServiceViewSet
+
+router = DefaultRouter()
+router.register(r'', ServiceViewSet, basename='service')
 
 urlpatterns = [
-    # Add URL patterns here
+    path('', include(router.urls)),
 ]
