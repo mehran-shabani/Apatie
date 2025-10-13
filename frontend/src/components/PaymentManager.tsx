@@ -20,8 +20,12 @@ export function PaymentManager({ userId }: PaymentManagerProps) {
       setStatus('loading');
       try {
         const [methodsResponse, historyResponse] = await Promise.all([
-          apiClient.get<PaymentMethod[]>(`/payments/methods/`),
-          apiClient.get<PaymentRecord[]>(`/payments/history/`),
+          apiClient.get<PaymentMethod[]>(`/payments/methods/`, {
+            params: { user_id: userId },
+          }),
+          apiClient.get<PaymentRecord[]>(`/payments/history/`, {
+            params: { user_id: userId },
+          }),
         ]);
         setMethods(methodsResponse.data);
         setHistory(historyResponse.data);
