@@ -1,8 +1,12 @@
-"""
-URL patterns.
-"""
-from django.urls import path
+"""URL patterns for vendor APIs."""
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
+
+from .views import VendorViewSet
+
+router = DefaultRouter()
+router.register(r'', VendorViewSet, basename='vendor')
 
 urlpatterns = [
-    # Add URL patterns here
+    path('', include(router.urls)),
 ]

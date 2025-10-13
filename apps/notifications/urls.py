@@ -1,8 +1,12 @@
-"""
-URL patterns.
-"""
-from django.urls import path
+"""URL patterns for notification APIs."""
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
+
+from .views import NotificationViewSet
+
+router = DefaultRouter()
+router.register(r'', NotificationViewSet, basename='notification')
 
 urlpatterns = [
-    # Add URL patterns here
+    path('', include(router.urls)),
 ]
