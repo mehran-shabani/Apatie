@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { apiClient } from '../api/client';
 import type { AppointmentRequest, Service } from '../types';
 
@@ -15,10 +15,12 @@ const generateTimeSlots = () => {
   return slots;
 };
 
+const today = new Date().toISOString().split('T')[0];
+
 export function BookingForm({ selectedService }: BookingFormProps) {
   const [formState, setFormState] = useState<AppointmentRequest>({
     serviceId: selectedService?.id ?? 0,
-    date: new Date().toISOString().split('T')[0],
+    date: today,
     timeSlot: '09:00',
     notes: '',
   });
@@ -26,6 +28,13 @@ export function BookingForm({ selectedService }: BookingFormProps) {
   const [error, setError] = useState<string | null>(null);
 
   const timeSlots = useMemo(() => generateTimeSlots(), []);
+
+  useEffect(() => {
+    setFormState((prev) => ({
+      ...prev,
+      serviceId: selectedService?.id ?? 0,
+    }));
+  }, [selectedService?.id]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -44,6 +53,12 @@ export function BookingForm({ selectedService }: BookingFormProps) {
       };
       await apiClient.post('/appointments/', payload);
       setStatus('success');
+      setFormState({
+        serviceId: selectedService.id,
+        date: today,
+        timeSlot: '09:00',
+        notes: '',
+      });
     } catch (err) {
       console.error(err);
       setStatus('error');
@@ -64,7 +79,7 @@ export function BookingForm({ selectedService }: BookingFormProps) {
             type="date"
             value={formState.date}
             onChange={(event) => setFormState((prev) => ({ ...prev, date: event.target.value }))}
-            min={new Date().toISOString().split('T')[0]}
+            min={today}
             required
           />
         </label>
@@ -94,7 +109,7 @@ export function BookingForm({ selectedService }: BookingFormProps) {
         {error && <p className="form__error">{error}</p>}
         {status === 'success' && <p className="form__success">نوبت شما ثبت شد و در انتظار تأیید است.</p>}
 
-        <button className="button" type="submit" disabled={status === 'submitting'}>
+        <button className="button" type="submit" disabled={!selectedService || status === 'submitting'}>
           {status === 'submitting' ? 'در حال ثبت…' : 'ثبت نوبت'}
         </button>
       </form>

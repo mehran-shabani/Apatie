@@ -1,4 +1,5 @@
-import { FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { isAxiosError } from 'axios';
 import { apiClient, setAuthToken } from '../api/client';
 import type { AuthResponse } from '../types';
 
@@ -10,11 +11,55 @@ interface AuthFormProps {
 
 const initialState = { email: '', password: '', name: '' };
 
+const extractErrorMessage = (mode: AuthMode, error: unknown): string => {
+  if (isAxiosError(error)) {
+    const status = error.response?.status;
+    const data = error.response?.data as
+      | { detail?: string; message?: string; errors?: Record<string, string[] | string> | string[] }
+      | undefined;
+
+    if (data) {
+      if (typeof data.detail === 'string' && data.detail.trim().length > 0) {
+        return data.detail;
+      }
+      if (typeof data.message === 'string' && data.message.trim().length > 0) {
+        return data.message;
+      }
+      if (data.errors) {
+        const values = Array.isArray(data.errors)
+          ? data.errors
+          : Object.values(data.errors);
+        const firstError = values[0];
+        if (Array.isArray(firstError) && typeof firstError[0] === 'string') {
+          return firstError[0];
+        }
+        if (typeof firstError === 'string') {
+          return firstError;
+        }
+      }
+    }
+
+    if (mode === 'login' && (status === 400 || status === 401)) {
+      return 'ایمیل یا رمز عبور نامعتبر است.';
+    }
+    if (mode === 'register' && status === 409) {
+      return 'این ایمیل قبلاً ثبت شده است.';
+    }
+  }
+
+  return 'عملیات با خطا مواجه شد. لطفاً دوباره تلاش کنید.';
+};
+
 export function AuthForm({ onAuthenticated }: AuthFormProps) {
   const [mode, setMode] = useState<AuthMode>('login');
   const [formState, setFormState] = useState(initialState);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormState((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -29,7 +74,7 @@ export function AuthForm({ onAuthenticated }: AuthFormProps) {
       onAuthenticated(data);
     } catch (err) {
       console.error(err);
-      setError('عملیات با خطا مواجه شد. لطفاً دوباره تلاش کنید.');
+      setError(extractErrorMessage(mode, err));
     } finally {
       setLoading(false);
     }
@@ -51,7 +96,7 @@ export function AuthForm({ onAuthenticated }: AuthFormProps) {
               name="name"
               type="text"
               value={formState.name}
-              onChange={(event) => setFormState((prev) => ({ ...prev, name: event.target.value }))}
+              onChange={handleInputChange}
             />
           </label>
         )}
@@ -63,7 +108,7 @@ export function AuthForm({ onAuthenticated }: AuthFormProps) {
             name="email"
             type="email"
             value={formState.email}
-            onChange={(event) => setFormState((prev) => ({ ...prev, email: event.target.value }))}
+            onChange={handleInputChange}
           />
         </label>
 
@@ -75,7 +120,7 @@ export function AuthForm({ onAuthenticated }: AuthFormProps) {
             type="password"
             minLength={8}
             value={formState.password}
-            onChange={(event) => setFormState((prev) => ({ ...prev, password: event.target.value }))}
+            onChange={handleInputChange}
           />
         </label>
 
@@ -91,6 +136,7 @@ export function AuthForm({ onAuthenticated }: AuthFormProps) {
             onClick={() => {
               setMode((prev) => (prev === 'login' ? 'register' : 'login'));
               setError(null);
+              setFormState(initialState);
             }}
           >
             {mode === 'login' ? 'ساخت حساب جدید' : 'قبلاً ثبت‌نام کرده‌اید؟ ورود'}

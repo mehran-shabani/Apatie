@@ -20,22 +20,26 @@ export function ServiceList({ onSelect, selectedServiceId }: ServiceListProps) {
       } catch (err) {
         console.error(err);
         setError('امکان دریافت فهرست سرویس‌ها وجود ندارد.');
-        setServices([
-          {
-            id: 1,
-            name: 'مشاوره اولیه',
-            description: 'گفتگوی ۳۰ دقیقه‌ای برای بررسی نیازها و پاسخ به سوالات.',
-            durationMinutes: 30,
-            price: 450000,
-          },
-          {
-            id: 2,
-            name: 'پیگیری تخصصی',
-            description: 'جلسه ۶۰ دقیقه‌ای جهت بررسی وضعیت و ارائه برنامه شخصی‌سازی شده.',
-            durationMinutes: 60,
-            price: 780000,
-          },
-        ]);
+        if (import.meta.env.DEV) {
+          setServices([
+            {
+              id: 1,
+              name: 'مشاوره اولیه',
+              description: 'گفتگوی ۳۰ دقیقه‌ای برای بررسی نیازها و پاسخ به سوالات.',
+              durationMinutes: 30,
+              price: 450000,
+            },
+            {
+              id: 2,
+              name: 'پیگیری تخصصی',
+              description: 'جلسه ۶۰ دقیقه‌ای جهت بررسی وضعیت و ارائه برنامه شخصی‌سازی شده.',
+              durationMinutes: 60,
+              price: 780000,
+            },
+          ]);
+        } else {
+          setServices([]);
+        }
       } finally {
         setLoading(false);
       }
