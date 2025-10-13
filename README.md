@@ -33,6 +33,18 @@ Backend API for Apatye platform - A modular monolith built with Django 5, DRF, P
 - [API Documentation (Swagger)](http://localhost:8000/api/docs/)
 - [API Documentation (ReDoc)](http://localhost:8000/api/redoc/)
 - [Admin Panel](http://localhost:8000/admin/)
+
+## 🖥️ Frontend (Vite + React)
+
+یک کلاینت React در پوشه `frontend/` قرار داده شده است که با Vite پیکربندی شده و از API بک‌اند روی `http://localhost:8000/api` استفاده می‌کند. برای راه‌اندازی رابط کاربری:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+در حالت توسعه، پراکسی داخلی Vite تمام درخواست‌های `/api` را به سرویس Django هدایت می‌کند. اسکریپت‌های `npm run build`, `npm run test` و `npm run lint` نیز برای تولید خروجی نهایی، اجرای تست‌های Vitest و بررسی ESLint در دسترس هستند.
 ## 🔧 Environment Variables
 
 Key environment variables (see `.env.example` for full list):
