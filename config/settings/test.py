@@ -2,7 +2,7 @@
 from .base import *  # noqa
 
 DATABASES = {
-    'default': env.db('TEST_DATABASE_URL', default='sqlite:///test.sqlite3'),
+    'default': env.db('TEST_DATABASE_URL', default='sqlite:///:memory:'),
 }
 
 PASSWORD_HASHERS = [
