@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Release Please
+        id: release
+        uses: google-github-actions/release-please-action@v4
+        with:
+          release-type: python
+          package-name: apatie
+          changelog-types: |
+            [{"type":"feat","section":"Features","hidden":false},
+             {"type":"fix","section":"Bug Fixes","hidden":false},
+             {"type":"perf","section":"Performance Improvements","hidden":false},
+             {"type":"refactor","section":"Refactors","hidden":false},
+             {"type":"docs","section":"Documentation","hidden":false},
+             {"type":"chore","section":"Miscellaneous","hidden":false}]
+
+      - name: Set up Python
+        if: steps.release.outputs.release_created == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install build tooling
+        if: steps.release.outputs.release_created == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+
+      - name: Build distribution artifacts
+        if: steps.release.outputs.release_created == 'true'
+        run: python -m build
+
+      - name: Upload distribution artifacts
+        if: steps.release.outputs.release_created == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: apatie-${{ steps.release.outputs.tag_name }}-dist
+          path: dist/
+          if-no-files-found: error
+
+      - name: Attach artifacts to release
+        if: steps.release.outputs.release_created == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release.outputs.tag_name }}
+          files: dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
