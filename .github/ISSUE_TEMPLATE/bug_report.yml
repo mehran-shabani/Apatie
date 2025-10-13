@@ -1,0 +1,61 @@
+name: Bug Report
+description: گزارش اشکال برای کمک به بهبود پروژه
+labels:
+  - bug
+title: "[BUG] عنوان مشکل"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        لطفاً تمامی فیلدهای الزامی را با اطلاعات دقیق پر کنید تا بتوانیم مشکل را بازتولید و برطرف کنیم.
+  - type: input
+    id: summary
+    attributes:
+      label: شرح کوتاه
+      description: خلاصه‌ای از مشکل را بنویسید.
+      placeholder: به طور خلاصه مشکل را توضیح دهید.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: گام‌های بازتولید
+      description: گام‌های دقیق برای بازتولید مشکل.
+      placeholder: |
+        1. به صفحه ... بروید
+        2. روی ... کلیک کنید
+        3. خطای ... رخ می‌دهد
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: رفتار مورد انتظار
+      description: شرح دهید که انتظار داشتید چه اتفاقی بیافتد.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: رفتار فعلی
+      description: چه چیزی در واقعیت رخ داد؟
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: اطلاعات محیطی
+      description: نسخه‌ها، سیستم‌عامل، مرورگر یا هر جزئیات مرتبط دیگر را ذکر کنید.
+      placeholder: |
+        - نسخه سیستم‌عامل:
+        - نسخه مرورگر/کلاینت:
+        - نسخه پروژه:
+    validations:
+      required: true
+  - type: textarea
+    id: attachments
+    attributes:
+      label: پیوست‌ها
+      description: در صورت امکان لاگ‌ها، اسکرین‌شات‌ها یا ویدئوهای مرتبط را اضافه کنید.
+    validations:
+      required: false
