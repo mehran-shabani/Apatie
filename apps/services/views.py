@@ -41,13 +41,32 @@ class ServiceViewSet(viewsets.ModelViewSet):
 
         serializer.save()
 
-    def perform_update(self, serializer):
-        """Apply the same ownership rules on update."""
+    def _assert_can_mutate(self, instance):
+        """Ensure only staff or the owning vendor can mutate a service."""
 
-        instance = self.get_object()
         user = self.request.user
 
-        if hasattr(user, 'vendor_profile') and instance.vendor != user.vendor_profile:
-            raise PermissionDenied('You can only manage your own services.')
+        if user.is_staff or user.is_superuser:
+            return
 
-        serializer.save()
+        if hasattr(user, 'vendor_profile') and instance.vendor == user.vendor_profile:
+            return
+
+        raise PermissionDenied('Only the owning vendor or staff can modify services.')
+
+    def perform_update(self, serializer):
+        """Apply ownership rules on update operations."""
+
+        instance = self.get_object()
+        self._assert_can_mutate(instance)
+
+        if hasattr(self.request.user, 'vendor_profile'):
+            serializer.save(vendor=instance.vendor)
+        else:
+            serializer.save()
+
+    def perform_destroy(self, instance):
+        """Apply ownership rules on delete operations."""
+
+        self._assert_can_mutate(instance)
+        instance.delete()

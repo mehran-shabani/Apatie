@@ -1,5 +1,6 @@
 """Views for vendor management."""
 from rest_framework import permissions, viewsets
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -22,6 +23,32 @@ class VendorViewSet(viewsets.ModelViewSet):
         if hasattr(user, 'vendor_profile'):
             return queryset.filter(pk=user.vendor_profile_id)
         return queryset.filter(is_active=True, is_verified=True)
+
+    def _assert_can_mutate(self, vendor):
+        """Ensure that only staff or the owning vendor can mutate vendor records."""
+
+        user = self.request.user
+
+        if user.is_staff or user.is_superuser:
+            return
+
+        if hasattr(user, 'vendor_profile') and vendor.pk == user.vendor_profile_id:
+            return
+
+        raise PermissionDenied('Only the vendor owner or staff can modify vendor records.')
+
+    def perform_update(self, serializer):
+        vendor = self.get_object()
+        self._assert_can_mutate(vendor)
+
+        if hasattr(self.request.user, 'vendor_profile') and vendor.user == self.request.user:
+            serializer.save(user=vendor.user)
+        else:
+            serializer.save()
+
+    def perform_destroy(self, instance):
+        self._assert_can_mutate(instance)
+        instance.delete()
 
     @action(detail=True, methods=['post'])
     def verify(self, request, pk=None):
