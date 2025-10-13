@@ -1,0 +1,57 @@
+name: Feature Request
+description: پیشنهاد ویژگی یا بهبود جدید
+labels:
+  - enhancement
+title: "[FEATURE] عنوان ویژگی"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        لطفاً نیازمندی‌ها و معیارهای پذیرش را با جزئیات بیان کنید تا بتوانیم درخواست را ارزیابی کنیم.
+  - type: input
+    id: summary
+    attributes:
+      label: شرح کوتاه
+      description: خلاصه‌ای از ویژگی درخواستی را بنویسید.
+      placeholder: ویژگی مورد نظر چیست؟
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: مشکل یا فرصت
+      description: توضیح دهید این ویژگی چه مشکل یا فرصتی را پوشش می‌دهد.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: راهکار پیشنهادی
+      description: راهکار یا سناریوی پیشنهادی خود را بیان کنید.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: معیارهای پذیرش
+      description: معیارهای دقیق برای پذیرش این ویژگی را مشخص کنید.
+      placeholder: |
+        - وقتی ...
+        - سپس ...
+        - نتیجه ...
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: راهکارهای جایگزین
+      description: اگر راهکار دیگری مدنظر دارید، آن را ذکر کنید.
+    validations:
+      required: false
+  - type: textarea
+    id: additional
+    attributes:
+      label: اطلاعات تکمیلی
+      description: هر اطلاعات یا پیوند اضافی که به تصمیم‌گیری کمک می‌کند.
+    validations:
+      required: false
