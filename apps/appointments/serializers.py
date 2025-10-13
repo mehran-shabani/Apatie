@@ -55,6 +55,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
         return appointment
 
     def validate(self, attrs):
+        error_msg = 'End time must be after start time.'
         if attrs['end_time'] <= attrs['start_time']:
-            raise serializers.ValidationError('End time must be after start time.')
+            raise serializers.ValidationError(error_msg)
         return super().validate(attrs)
