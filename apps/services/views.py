@@ -1,4 +1,6 @@
 """ViewSets for managing services."""
+from typing import ClassVar, List, Type
+
 from rest_framework import permissions, viewsets
 from rest_framework.exceptions import PermissionDenied
 
@@ -6,11 +8,26 @@ from .models import Service
 from .serializers import ServiceSerializer
 
 
+class IsVendorOrStaffOrReadOnly(permissions.BasePermission):
+    """Allow unsafe operations only to staff or vendors."""
+
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        user = request.user
+        if not user or not user.is_authenticated:
+            return False
+        return user.is_staff or user.is_superuser or hasattr(user, 'vendor_profile')
+
+
 class ServiceViewSet(viewsets.ModelViewSet):
     """API endpoint for listing and managing services."""
 
     serializer_class = ServiceSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes: ClassVar[List[Type[permissions.BasePermission]]] = [
+        permissions.IsAuthenticated,
+        IsVendorOrStaffOrReadOnly,
+    ]
 
     def get_queryset(self):
         """Restrict services based on the requesting user's role."""
@@ -38,6 +55,9 @@ class ServiceViewSet(viewsets.ModelViewSet):
 
         if not (user.is_staff or user.is_superuser):
             raise PermissionDenied('Only vendors or staff can create services.')
+
+        if vendor is None:
+            raise PermissionDenied('Staff must specify a vendor when creating services.')
 
         serializer.save()
 

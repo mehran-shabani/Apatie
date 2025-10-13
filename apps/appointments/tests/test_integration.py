@@ -5,6 +5,7 @@ import pytest
 from django.utils import timezone
 from rest_framework.reverse import reverse
 
+from apps.appointments.models import Appointment
 from apps.notifications.models import Notification
 
 
@@ -30,8 +31,6 @@ def test_booking_appointment_triggers_notification_and_delivery(api_client, user
     assert Notification.objects.filter(recipient=vendor.user, title__icontains='New appointment').exists()
 
     appointment_id = response.data['id']
-    from apps.appointments.models import Appointment
-
     appointment = Appointment.objects.get(pk=appointment_id)
     assert hasattr(appointment, 'delivery_order')
     assert appointment.delivery_order.address == 'Abadeh, Therapy Center'

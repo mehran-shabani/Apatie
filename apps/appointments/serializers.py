@@ -50,8 +50,6 @@ class AppointmentSerializer(serializers.ModelSerializer):
             notes=validated_data.get('notes', ''),
             delivery_address=delivery_address or None,
         )
-        if validated_data.get('notes'):
-            appointment.notes = validated_data['notes']
         return appointment
 
     def validate(self, attrs):

@@ -22,4 +22,5 @@ class ServiceSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at',
         )
-        read_only_fields = ('id', 'vendor', 'created_at', 'updated_at', 'vendor_name')
+        read_only_fields = ('id', 'created_at', 'updated_at', 'vendor_name')
+        extra_kwargs = {'vendor': {'required': False}}

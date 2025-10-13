@@ -1,6 +1,5 @@
 """Delivery domain services."""
 from django.db import transaction
-from django.utils import timezone
 
 from .models import DeliveryOrder
 
@@ -28,4 +27,4 @@ def mark_delivery_in_transit(delivery: DeliveryOrder) -> DeliveryOrder:
 def mark_delivery_completed(delivery: DeliveryOrder, *, timestamp=None) -> DeliveryOrder:
     """Mark the delivery as completed."""
 
-    return delivery.mark_delivered(timestamp=timestamp or timezone.now())
+    return delivery.mark_delivered(timestamp=timestamp)

@@ -1,4 +1,6 @@
 """Views for vendor management."""
+from typing import ClassVar, List, Type
+
 from rest_framework import permissions, viewsets
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.decorators import action
@@ -9,11 +11,26 @@ from .serializers import VendorSerializer
 from .services import verify_vendor, deactivate_vendor
 
 
+class IsVendorOwnerOrStaff(permissions.BasePermission):
+    """Allow unsafe operations to vendor owners or staff members."""
+
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        user = request.user
+        if not user or not user.is_authenticated:
+            return False
+        return user.is_staff or user.is_superuser or hasattr(user, 'vendor_profile')
+
+
 class VendorViewSet(viewsets.ModelViewSet):
     """CRUD operations for vendors."""
 
     serializer_class = VendorSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes: ClassVar[List[Type[permissions.BasePermission]]] = [
+        permissions.IsAuthenticated,
+        IsVendorOwnerOrStaff,
+    ]
 
     def get_queryset(self):
         user = self.request.user
