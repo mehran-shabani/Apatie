@@ -33,5 +33,5 @@ jobs:
 
       - name: Run pytest
         env:
-          DJANGO_SETTINGS_MODULE: config.settings.test
-        run: pytest --ds=config.settings.test --cov
+          DJANGO_SETTINGS_MODULE: config.settings.base
+        run: pytest --ds=config.settings.base --cov
